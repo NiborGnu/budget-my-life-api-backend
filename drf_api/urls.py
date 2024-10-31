@@ -32,4 +32,8 @@ urlpatterns = [
         'transactions/',
         include('transactions.urls'),
     ),
+    path(
+        'categories/',
+        include('categories.urls'),
+    ),
 ]

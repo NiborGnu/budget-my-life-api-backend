@@ -1,6 +1,8 @@
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth.models import User
 from .models import Profile
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, UserSerializer
 
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
@@ -19,3 +21,8 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
         # Allow users to only access their own profile or profiles they have permission to view
         return self.queryset.filter(owner=self.request.user)
 
+
+class CreateUserView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]

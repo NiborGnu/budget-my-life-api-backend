@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
 from .views import root_route
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView
+)
 
 
 urlpatterns = [
@@ -13,16 +17,19 @@ urlpatterns = [
         admin.site.urls
     ),
     path(
-        'api-auth/',
-        include('rest_framework.urls')
+        'token/',
+        TokenObtainPairView.as_view(),
+        name='get_token'
     ),
     path(
-        'dj-rest-auth/',
-        include('dj_rest_auth.urls')
+        'token/refresh/',
+        TokenRefreshView.as_view(),
+        name='refresh_token'
     ),
     path(
-        'dj-rest-auth/register/',
-        include('dj_rest_auth.registration.urls'),
+        'auth/',
+        include('rest_framework.urls'),
+        name='auth'
     ),
     path(
         'users/',

@@ -12,6 +12,9 @@ class TransactionSerializer(serializers.ModelSerializer):
             'amount',
             'transaction_type',
             'category',
+            'subcategory',
+            'category_id',
+            'subcategory_id',
             'description',
             'created_at'
         ]

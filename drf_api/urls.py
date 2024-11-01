@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from users.views import CreateUserView
 from .views import root_route
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -30,6 +31,11 @@ urlpatterns = [
         'auth/',
         include('rest_framework.urls'),
         name='auth'
+    ),
+    path(
+        'register/',
+        CreateUserView.as_view(),
+        name='register'
     ),
     path(
         'users/',

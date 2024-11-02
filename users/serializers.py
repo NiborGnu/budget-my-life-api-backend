@@ -28,7 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'username',
-            'email',
             'password',
         ]
         extra_kwargs = {
@@ -36,5 +35,8 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
         return user

@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from users.models import Profile
 from categories.models import Category, SubCategory
 
 class Transaction(models.Model):
@@ -9,8 +8,8 @@ class Transaction(models.Model):
         ('expense', 'Expense'),
     )
 
-    profile = models.ForeignKey(
-        Profile,
+    user = models.ForeignKey(
+        User,
         on_delete=models.CASCADE,
         related_name='transactions'
     )

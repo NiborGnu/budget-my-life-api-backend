@@ -12,4 +12,9 @@ urlpatterns = [
         views.TransactionDetail.as_view(),
         name='transaction-detail'
     ),
+    path(
+        'summary/',
+        views.TransactionSummary.as_view(),
+        name='transaction-summary'
+    ),
 ]

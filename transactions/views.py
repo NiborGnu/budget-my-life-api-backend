@@ -1,4 +1,8 @@
+from django.db.models import Sum
 from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from .models import Transaction
 from .serializers import TransactionSerializer
 
@@ -30,3 +34,20 @@ class TransactionDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         # Allow users to only access their own transactions
         return Transaction.objects.filter(profile__owner=self.request.user)
+
+class TransactionSummary(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        transactions = Transaction.objects.filter(profile__owner=user)
+
+        # Calculate totals for income and expense
+        income_total = transactions.filter(transaction_type='income').aggregate(total=Sum('amount'))['total'] or 0
+        expense_total = transactions.filter(transaction_type='expense').aggregate(total=Sum('amount'))['total'] or 0
+
+        # Return the response with income and expense totals
+        return Response({
+            'income': income_total,
+            'expense': expense_total,
+        })

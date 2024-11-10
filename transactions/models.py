@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import Profile
 from categories.models import Category, SubCategory
 
 class Transaction(models.Model):
@@ -8,8 +8,8 @@ class Transaction(models.Model):
         ('expense', 'Expense'),
     )
 
-    user = models.ForeignKey(
-        User,
+    profile = models.ForeignKey(
+        Profile,
         on_delete=models.CASCADE,
         related_name='transactions'
     )
@@ -40,5 +40,5 @@ class Transaction(models.Model):
     def __str__(self):
         return (
             f"{self.transaction_type.capitalize()}: {self.amount} "
-            f"by {self.profile.user.username}"
+            f"by {self.profile.owner.username}"
         )

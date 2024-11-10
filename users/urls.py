@@ -11,4 +11,9 @@ urlpatterns = [
         'profiles/<int:pk>/',
         views.ProfileDetail.as_view()
     ),
+    path(
+        'profile/',
+        views.UserProfileView.as_view(),
+        name='user-profile'
+    ),
 ]

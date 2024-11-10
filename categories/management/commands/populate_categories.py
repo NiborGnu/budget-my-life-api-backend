@@ -18,55 +18,72 @@ class Command(BaseCommand):
         subcategories_data = {
             'Housing': [
                 'Rent/Mortgage', 'Electricity', 'Water', 'Trash', 'Internet',
-                'Maintenance', 'Property Tax', 'Others'
+                'Maintenance', 'Property Tax'
             ],
             'Transportation': [
                 'Fuel', 'Car Payment', 'Insurance', 'Public Transit', 'Maintenance',
-                'Parking', 'Others'
+                'Parking'
             ],
             'Food': [
-                'Groceries', 'Dining Out', 'Snacks', 'Beverages', 'Others'
+                'Groceries', 'Dining Out', 'Snacks', 'Beverages'
             ],
             'Health': [
-                'Insurance', 'Doctor Visits', 'Medication', 'Dental Care', 'Gym', 'Others'
+                'Insurance', 'Doctor Visits', 'Medication', 'Dental Care', 'Gym'
             ],
             'Personal': [
-                'Clothing', 'Haircuts', 'Skincare', 'Entertainment', 'Hobbies', 'Others'
+                'Clothing', 'Haircuts', 'Skincare', 'Entertainment', 'Hobbies'
             ],
             'Education': [
-                'Tuition', 'Books', 'Supplies', 'Courses', 'Others'
+                'Tuition', 'Books', 'Supplies', 'Courses'
             ],
             'Savings': [
-                'Emergency Fund', 'Retirement', 'Investments', 'Others'
+                'Emergency Fund', 'Retirement', 'Investments'
             ],
             'Debt': [
-                'Credit Cards', 'Student Loans', 'Personal Loans', 'Others'
+                'Credit Cards', 'Student Loans', 'Personal Loans'
             ],
             'Miscellaneous (Expenses)': [
-                'Subscriptions', 'Donations', 'Gifts', 'Others'
+                'Subscriptions', 'Donations', 'Gifts'
             ],
             'Employment': [
-                'Salary', 'Bonuses', 'Overtime', 'Others'
+                'Salary', 'Bonuses', 'Overtime'
             ],
             'Investments': [
-                'Dividends', 'Interest', 'Capital Gains', 'Others'
+                'Dividends', 'Interest', 'Capital Gains'
             ],
             'Business': [
-                'Sales', 'Freelance', 'Royalties', 'Others'
+                'Sales', 'Freelance', 'Royalties'
             ],
             'Government': [
-                'Tax Refund', 'Unemployment', 'Social Security', 'Others'
+                'Tax Refund', 'Unemployment', 'Social Security'
             ],
             'Miscellaneous (Incomes)': [
-                'Gifts', 'Inheritance', 'Others'
+                'Gifts', 'Inheritance'
             ]
         }
 
+        # Loop through each category
         for category_type, category_names in categories_data.items():
             for category_name in category_names:
-                category = Category.objects.create(name=category_name, category_type=category_type)
+                # Check if category already exists, or create it
+                category, created = Category.objects.get_or_create(
+                    name=category_name,
+                    category_type=category_type
+                )
+
+                # Get the subcategories for the category (including "Others")
                 subcategories = subcategories_data.get(category_name, [])
                 for sub_name in subcategories:
-                    SubCategory.objects.create(category=category, name=sub_name)
+                    # Ensure "Others" subcategory is always created for each category
+                    SubCategory.objects.get_or_create(
+                        category=category, 
+                        name=sub_name
+                    )
+                
+                # Ensure the "Others" subcategory exists for each category
+                SubCategory.objects.get_or_create(
+                    category=category, 
+                    name='Others'
+                )
 
-        self.stdout.write(self.style.SUCCESS('Successfully populated categories and subcategories'))
+        self.stdout.write(self.style.SUCCESS('Successfully populated categories and subcategories with "Others" subcategory'))

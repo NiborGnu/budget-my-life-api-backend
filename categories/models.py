@@ -7,7 +7,7 @@ class Category(models.Model):
         ('expense', 'Expense')
     ]
     name = models.CharField(max_length=255)
-    category_type = models.CharField(max_length=7, choices=CATEGORY_TYPES)
+    category_type = models.CharField(max_length=25, choices=CATEGORY_TYPES)
 
     def __str__(self):
         return self.name

@@ -1,5 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
+from urllib.parse import urlparse
 import environ
 import os
 import sys
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'users',
     'transactions',
     'categories',
+    'budgets',
 ]
 
 MIDDLEWARE = [
@@ -95,6 +97,10 @@ WSGI_APPLICATION = 'drf_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+tmpPostgres = urlparse(env("DATABASE_URL"))
+
+
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
@@ -103,11 +109,14 @@ if 'test' in sys.argv:
         }
     }
 else:
-    # Database configuration for development or production
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': tmpPostgres.path.lstrip('/'),  # Remove leading slash from path
+            'USER': tmpPostgres.username,
+            'PASSWORD': tmpPostgres.password,
+            'HOST': tmpPostgres.hostname,
+            'PORT': tmpPostgres.port or 5432,  # Default Postgres port
         }
     }
 

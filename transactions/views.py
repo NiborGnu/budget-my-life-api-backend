@@ -32,8 +32,13 @@ class TransactionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Allow users to only access their own transactions
         return Transaction.objects.filter(profile__owner=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 class TransactionSummary(APIView):
     permission_classes = [IsAuthenticated]
@@ -42,11 +47,9 @@ class TransactionSummary(APIView):
         user = request.user
         transactions = Transaction.objects.filter(profile__owner=user)
 
-        # Calculate totals for income and expense
         income_total = transactions.filter(transaction_type='income').aggregate(total=Sum('amount'))['total'] or 0
         expense_total = transactions.filter(transaction_type='expense').aggregate(total=Sum('amount'))['total'] or 0
 
-        # Return the response with income and expense totals
         return Response({
             'income': income_total,
             'expense': expense_total,

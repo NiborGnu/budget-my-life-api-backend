@@ -49,4 +49,8 @@ urlpatterns = [
         'categories/',
         include('categories.urls'),
     ),
+    path(
+        'budgets/',
+        include('budgets.urls'),
+    ),
 ]

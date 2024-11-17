@@ -1,7 +1,8 @@
-from rest_framework import generics, permissions
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework import generics, permissions, status
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
 from .serializers import ProfileSerializer, UserSerializer
@@ -20,19 +21,58 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Allow users to only access their own profile or profiles they have permission to view
-        return self.queryset.filter(owner=self.request.user)
+        user = self.request.user
+        return self.queryset.filter(owner=user)
 
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
-class UserProfileView(APIView):
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return get_object_or_404(Profile, owner=self.request.user)
+
+
+class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        user = request.user
+        data = request.data
+
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+        confirm_password = data.get("confirm_password")
+
+        if not user.check_password(old_password):
+            return Response(
+                {"detail": "Old password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_password != confirm_password:
+            return Response(
+                {"detail": "New passwords do not match."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+        return Response(
+            {"detail": "Password updated successfully."},
+            status=status.HTTP_200_OK
+        )
+
+class CheckUsernameView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
-        profile = Profile.objects.get(owner=request.user)
-        serializer = ProfileSerializer(profile, context={'request': request})
-        return Response(serializer.data)
+        username = request.query_params.get("username", "")
+        if User.objects.filter(username=username).exists():
+            return Response({"available": False})
+        return Response({"available": True})

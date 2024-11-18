@@ -6,7 +6,11 @@ from categories.serializers import CategorySerializer
 class BudgetSerializer(serializers.ModelSerializer):
     profile = serializers.ReadOnlyField(source='profile.owner.username')
     category = CategorySerializer(read_only=True)  # To show category details
-    category_id = serializers.IntegerField(write_only=True, required=False)  # Optional field to set category by ID
+    category_id = serializers.IntegerField(
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
 
     class Meta:
         model = Budget
@@ -38,12 +42,14 @@ class BudgetSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
+        # Handle category_id
         category_id = validated_data.pop('category_id', None)
-
-        # Update category if provided
-        if category_id is not None:
+        if category_id is None:
+            instance.category = None  # Disassociate category when category_id is null
+        elif category_id:
             instance.category_id = category_id
 
+        # Update other fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 

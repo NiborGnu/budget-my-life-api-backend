@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Profile
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator, ValidationError
+from django.contrib.auth.password_validation import validate_password
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -10,7 +11,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         source='owner.username',
         required=True,
         validators=[
-            UniqueValidator(queryset=User.objects.all(),
+            UniqueValidator(
+                queryset=User.objects.all(),
                 message="This username is already taken.")
             ],
     )
@@ -39,6 +41,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         user_data = data.get('owner', {})
         username = user_data.get('username')
 
+        # Ensure logged-in user can keep their username
+        if self.instance and username == self.instance.owner.username:
+            return data
+
         # Validate username length
         if username and len(username) < 3:
             raise ValidationError(
@@ -62,6 +68,21 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class PasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(
+        write_only=True,
+        validators=[validate_password]
+    )
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError(
+                {"confirm_password": "Passwords do not match."}
+            )
+        return data
 
 
 class UserSerializer(serializers.ModelSerializer):

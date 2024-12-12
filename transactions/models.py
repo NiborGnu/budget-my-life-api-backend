@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import Profile
 from categories.models import Category, SubCategory
+from budgets.models import Budget
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = (
@@ -28,6 +29,13 @@ class Transaction(models.Model):
         SubCategory,
         on_delete=models.SET_NULL,
         null=True,
+        related_name='transactions'
+    )
+    budget = models.ForeignKey(
+        Budget,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name='transactions'
     )
     description = models.TextField(blank=True)

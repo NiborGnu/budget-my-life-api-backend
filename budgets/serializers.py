@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from .models import Budget
 from categories.serializers import CategorySerializer
+from transactions.serializers import TransactionSerializer
 
 
 class BudgetSerializer(serializers.ModelSerializer):
     profile = serializers.ReadOnlyField(source='profile.owner.username')
-    category = CategorySerializer(read_only=True)  # To show category details
+    category = CategorySerializer(read_only=True)
+    transactions = TransactionSerializer(many=True, read_only=True)
     category_id = serializers.IntegerField(
         write_only=True,
         required=False,
@@ -23,11 +25,12 @@ class BudgetSerializer(serializers.ModelSerializer):
             'updated_at',
             'category',
             'category_id',
+            'transactions',
         ]
 
     def create(self, validated_data):
         category_id = validated_data.pop('category_id', None)
-        profile = self.context['request'].user.profile  # Get the profile from the request context
+        profile = self.context['request'].user.profile
 
         # Assign category if provided
         if category_id:
@@ -38,8 +41,6 @@ class BudgetSerializer(serializers.ModelSerializer):
 
         # Explicitly set profile and pass the remaining data
         return Budget.objects.create(profile=profile, **validated_data)
-
-
 
     def update(self, instance, validated_data):
         # Handle category_id

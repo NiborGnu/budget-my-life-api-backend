@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from categories.models import Category, SubCategory
 
+
 class Command(BaseCommand):
     help = 'Populate categories and subcategories'
 
@@ -11,7 +12,11 @@ class Command(BaseCommand):
                 'Education', 'Savings', 'Debt', 'Miscellaneous'
             ],
             'Incomes': [
-                'Employment', 'Investments', 'Business', 'Government', 'Miscellaneous'
+                'Employment',
+                'Investments',
+                'Business',
+                'Government',
+                'Miscellaneous',
             ]
         }
 
@@ -21,14 +26,22 @@ class Command(BaseCommand):
                 'Maintenance', 'Property Tax'
             ],
             'Transportation': [
-                'Fuel', 'Car Payment', 'Insurance', 'Public Transit', 'Maintenance',
-                'Parking'
+                'Fuel',
+                'Car Payment',
+                'Insurance',
+                'Public Transit',
+                'Maintenance',
+                'Parking',
             ],
             'Food': [
                 'Groceries', 'Dining Out', 'Snacks', 'Beverages'
             ],
             'Health': [
-                'Insurance', 'Doctor Visits', 'Medication', 'Dental Care', 'Gym'
+                'Insurance',
+                'Doctor Visits',
+                'Medication',
+                'Dental Care',
+                'Gym',
             ],
             'Personal': [
                 'Clothing', 'Haircuts', 'Skincare', 'Entertainment', 'Hobbies'
@@ -74,16 +87,17 @@ class Command(BaseCommand):
                 # Get the subcategories for the category (including "Others")
                 subcategories = subcategories_data.get(category_name, [])
                 for sub_name in subcategories:
-                    # Ensure "Others" subcategory is always created for each category
+                    # Ensure "Others" subcategory is
+                    # always created for each category
                     SubCategory.objects.get_or_create(
-                        category=category, 
+                        category=category,
                         name=sub_name
                     )
-                
+
                 # Ensure the "Others" subcategory exists for each category
                 SubCategory.objects.get_or_create(
-                    category=category, 
+                    category=category,
                     name='Others'
                 )
 
-        self.stdout.write(self.style.SUCCESS('Successfully populated categories and subcategories with "Others" subcategory'))
+        self.stdout.write(self.style.SUCCESS('Done Successfully!'))

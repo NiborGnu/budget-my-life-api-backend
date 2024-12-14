@@ -11,6 +11,7 @@ from .serializers import (
     PasswordUpdateSerializer
 )
 
+
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
@@ -18,6 +19,7 @@ class ProfileList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
@@ -33,6 +35,7 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
+
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
@@ -72,6 +75,7 @@ class ChangePasswordView(APIView):
             status=status.HTTP_200_OK
         )
 
+
 class CheckUsernameView(APIView):
     permission_classes = [AllowAny]
 
@@ -80,6 +84,7 @@ class CheckUsernameView(APIView):
         if User.objects.filter(username=username).exists():
             return Response({"available": False})
         return Response({"available": True})
+
 
 class ChangePasswordView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]

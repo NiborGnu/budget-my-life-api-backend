@@ -9,12 +9,16 @@ class TransactionSerializer(serializers.ModelSerializer):
     profile = serializers.ReadOnlyField(source='profile.owner.username')
     category = CategorySerializer(read_only=True)
     subcategory = SubCategorySerializer(read_only=True)
-    
+
     # We only show the budget_id here, but not the full Budget object
-    budget_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
-    
+    budget_id = serializers.IntegerField(
+        write_only=True, required=False, allow_null=True
+    )
+
     category_id = serializers.IntegerField(write_only=True, required=True)
-    subcategory_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
+    subcategory_id = serializers.IntegerField(
+        write_only=True, required=False, allow_null=True
+    )
 
     class Meta:
         model = Transaction
@@ -41,7 +45,8 @@ class TransactionSerializer(serializers.ModelSerializer):
         if category_id:
             validated_data['category'] = Category.objects.get(id=category_id)
         if subcategory_id:
-            validated_data['subcategory'] = SubCategory.objects.get(id=subcategory_id)
+            validated_data['subcategory'] = SubCategory.objects.get(
+                id=subcategory_id)
         if budget_id:
             validated_data['budget'] = Budget.objects.get(id=budget_id)
 

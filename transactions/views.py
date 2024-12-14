@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Transaction
 from .serializers import TransactionSerializer
 
+
 class TransactionList(generics.ListCreateAPIView):
     serializer_class = TransactionSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -15,7 +16,7 @@ class TransactionList(generics.ListCreateAPIView):
         queryset = Transaction.objects.filter(profile__owner=user)
         category_id = self.request.query_params.get('category_id')
         subcategory_id = self.request.query_params.get('subcategory_id')
-        
+
         if category_id:
             queryset = queryset.filter(category_id=category_id)
         if subcategory_id:
@@ -25,6 +26,7 @@ class TransactionList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user.profile)
+
 
 class TransactionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Transaction.objects.all()
@@ -40,6 +42,7 @@ class TransactionDetail(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.delete()
 
+
 class TransactionSummary(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -47,8 +50,12 @@ class TransactionSummary(APIView):
         user = request.user
         transactions = Transaction.objects.filter(profile__owner=user)
 
-        income_total = transactions.filter(transaction_type='income').aggregate(total=Sum('amount'))['total'] or 0
-        expense_total = transactions.filter(transaction_type='expense').aggregate(total=Sum('amount'))['total'] or 0
+        income_total = transactions.filter(
+            transaction_type='income'
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        expense_total = transactions.filter(
+            transaction_type='expense'
+        ).aggregate(total=Sum('amount'))['total'] or 0
 
         return Response({
             'income': income_total,

@@ -3,6 +3,7 @@ from users.models import Profile
 from categories.models import Category, SubCategory
 from budgets.models import Budget
 
+
 class Transaction(models.Model):
     TRANSACTION_TYPES = (
         ('income', 'Income'),

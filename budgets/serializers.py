@@ -46,7 +46,7 @@ class BudgetSerializer(serializers.ModelSerializer):
         # Handle category_id
         category_id = validated_data.pop('category_id', None)
         if category_id is None:
-            instance.category = None  # Disassociate category when category_id is null
+            instance.category = None
         elif category_id:
             instance.category_id = category_id
 

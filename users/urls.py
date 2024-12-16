@@ -26,4 +26,9 @@ urlpatterns = [
         views.CheckUsernameView.as_view(),
         name='check-username'
     ),
+    path(
+        'delete-profile/',
+        views.DeleteProfileView.as_view(),
+        name='delete-profile'
+    ),
 ]

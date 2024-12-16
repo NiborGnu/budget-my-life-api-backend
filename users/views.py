@@ -12,6 +12,35 @@ from .serializers import (
 )
 
 
+class DeleteProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        try:
+            # Delete the associated profile
+            profile = Profile.objects.get(owner=user)
+            profile.delete()
+            
+            # Delete the user
+            user.delete()
+
+            return Response(
+                {"detail": "Profile and user deleted successfully."},
+                status=status.HTTP_200_OK
+            )
+        except Profile.DoesNotExist:
+            return Response(
+                {"detail": "Profile not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer

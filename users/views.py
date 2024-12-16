@@ -21,7 +21,7 @@ class DeleteProfileView(APIView):
             # Delete the associated profile
             profile = Profile.objects.get(owner=user)
             profile.delete()
-            
+
             # Delete the user
             user.delete()
 

@@ -57,6 +57,6 @@ Please see separate [TESTING.md](./TESTING.md) file for all testing.
 
 ## Credits
 
-- The Code Institute DRF API walkthrough was used as a base to create this API. Customised models were used to make the project unique.
+- The Code Institute DRF API walkthrough was used to learn the basics and more.
 - [Coding with Lewis](https://www.youtube.com/@CodingWithLewis) for great tutorials.
 - [Codemy.com](https://www.youtube.com/@Codemycom) for great tutorials.

@@ -22,6 +22,23 @@
 - [Tests Budgets](https://github.com/NiborGnu/budget-my-life-api-backend/blob/main/budgets/tests.py)
 - ![Validation shown for all tests](./documentation/tests/budgets_tests.png)
 
+## Using Postman
+
+| **Test Scenario**        | **Action**       | **Expected Result** | **Result** |
+| ------------------------ | ---------------- | ------------------- | ---------- |
+| **Create a Transaction** | sending the data | get a 201           | 201        |
+| **Edit a Transaction**   | sending the data | get a 201           | 201        |
+| **View a Transaction**   | sending the data | get a 201           | 201        |
+| **Delete a Transaction** | sending the data | get a 201           | 201        |
+| **Create a Budget**      | sending the data | get a 201           | 201        |
+| **Edit a Budget**        | sending the data | get a 201           | 201        |
+| **View a Budget**        | sending the data | get a 201           | 201        |
+| **Delete a Budget**      | sending the data | get a 201           | 201        |
+| **Create a Profile**     | sending the data | get a 201           | 201        |
+| **Edit a Profile**       | sending the data | get a 201           | 201        |
+| **Delete a Profile**     | sending the data | get a 201           | 201        |
+| **Edit a Password**      | sending the data | get a 201           | 201        |
+
 ## Bugs
 
 No bugs found.
